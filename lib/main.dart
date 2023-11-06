@@ -55,11 +55,16 @@ class _MyHomePageState extends State<MyHomePage> {
       //   }
       // });
       var subscription = flutterBlue.scanResults.listen((results) {
+        print("results: $results");
         for (ScanResult r in results) {
           print("result: $r");
+          if (!devices.contains(r)) {
+            setState(() {
+              devices.add(r.device);
+            });
+          }
         }
       });
-      print("Subs: $subscription");
       flutterBlue.stopScan();
       print("stop scanning");
     } catch (e) {
@@ -98,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       ),
       floatingActionButton: Container(
-        decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.red),
+        decoration: BoxDecoration(shape: BoxShape.circle),
         child: FloatingActionButton(
           onPressed: () {
             devices.clear();
