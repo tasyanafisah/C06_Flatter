@@ -13,15 +13,15 @@ class _ScanScreenState extends State<ScanScreen> {
   Barcode? result;
   QRViewController? controller;
 
-  @override
-  void reassemble() {
-    super.reassemble();
-    if (Platform.isAndroid) {
-      controller!.pauseCamera();
-    } else if (Platform.isIOS) {
-      controller!.resumeCamera();
-    }
-  }
+  // @override
+  // void reassemble() {
+  //   super.reassemble();
+  //   if (Platform.isAndroid) {
+  //     controller!.pauseCamera();
+  //   } else if (Platform.isIOS) {
+  //     controller!.resumeCamera();
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +79,7 @@ class _ScanScreenState extends State<ScanScreen> {
                           color: Color(0xFFF95223),
                         ),
                       ),
-                      Expanded(
+                      Container(
                           child: Center(
                         child: (result != null)
                             ? Text('Data: ${result!.code}')

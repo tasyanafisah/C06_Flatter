@@ -52,9 +52,9 @@ class _LandingScreenState extends State<LandingScreen>
       body: Stack(
         children: <Widget>[
           Positioned(
-            top: 16.0,
+            top: 0,
             left: 16.0,
-            child: Image.asset("assets/images/safeguard.png", width: 200),
+            child: Image.asset("assets/images/safeguard.png", width: 100),
           ),
           Center(
             child: Column(
