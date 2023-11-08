@@ -1,6 +1,28 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-class ScanScreen extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
+
+class ScanScreen extends StatefulWidget {
+  @override
+  State<ScanScreen> createState() => _ScanScreenState();
+}
+
+class _ScanScreenState extends State<ScanScreen> {
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  Barcode? result;
+  QRViewController? controller;
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      controller!.pauseCamera();
+    } else if (Platform.isIOS) {
+      controller!.resumeCamera();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +63,7 @@ class ScanScreen extends StatelessWidget {
                   width: double.infinity,
                   height: MediaQuery.of(context).size.height * .55,
                   color: Colors.amber,
+                  child: QRView(key: qrKey, onQRViewCreated: onQRviewCamera),
                 ),
                 Container(
                   width: double.infinity,
@@ -56,6 +79,12 @@ class ScanScreen extends StatelessWidget {
                           color: Color(0xFFF95223),
                         ),
                       ),
+                      Expanded(
+                          child: Center(
+                        child: (result != null)
+                            ? Text('Data: ${result!.code}')
+                            : Text('Scan a QR'),
+                      )),
                       SizedBox(height: 24.0),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -143,5 +172,20 @@ class ScanScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void onQRviewCamera(QRViewController p1) {
+    this.controller = p1;
+    controller?.scannedDataStream.listen((scanData) {
+      setState(() {
+        result = scanData;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
   }
 }

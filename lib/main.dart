@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ble_manager/components/buttonbig.dart';
 import 'package:flutter_ble_manager/scan.dart';
 import 'package:flutter_ble_manager/track.dart';
+// import 'package:scroll_loop_auto_scroll/scroll_loop_auto_scroll.dart';
 // import 'package:flutter_blue/flutter_blue.dart';
 
 void main() {
@@ -51,37 +52,10 @@ class _LandingScreenState extends State<LandingScreen>
       body: Stack(
         children: <Widget>[
           Positioned(
-              top: 0,
-              left: 0,
-              child: AnimatedBuilder(
-                animation: _animationController,
-                builder: (context, child) {
-                  return Transform.translate(
-                    offset: Offset(0.0, 200 * _animationController.value),
-                    child: Transform.rotate(
-                      angle: -1.5708, // 90 degrees in radians
-                      child: Text(
-                        "Safeguard",
-                        style: TextStyle(
-                          fontFamily: 'Moonhouse',
-                          fontSize: 24,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              )),
-          Positioned(
-              top: 16.0,
-              left: 16.0,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: Image.asset("assets/images/safeguard.png",
-                    width: 40, height: 40),
-              )),
+            top: 16.0,
+            left: 16.0,
+            child: Image.asset("assets/images/safeguard.png", width: 200),
+          ),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
