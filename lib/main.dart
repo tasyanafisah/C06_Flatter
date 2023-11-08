@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_ble_manager/components/buttonbig.dart';
+import 'package:flutter_ble_manager/scan.dart';
+import 'package:flutter_ble_manager/track.dart';
+// import 'package:flutter_blue/flutter_blue.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,108 +14,226 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-      ),
-      home: MyHomePage(title: 'Capstone C06'),
+      title: 'Safeguard',
+      home: LandingScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
+class LandingScreen extends StatefulWidget {
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _LandingScreenState createState() => _LandingScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  final FlutterBlue flutterBlue = FlutterBlue.instance;
-  List<BluetoothDevice> devices = [];
+class _LandingScreenState extends State<LandingScreen>
+    with TickerProviderStateMixin {
+  late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
-    scanForDevices();
-  }
-
-  void scanForDevices() {
-    print("Start scan");
-    try {
-      flutterBlue.startScan(timeout: Duration(seconds: 4));
-      // flutterBlue.scanResults.listen((List<ScanResult> results) {
-      //   print("Get scan: $results");
-      //   for (ScanResult result in results) {
-      //     if (!devices.contains(result.device)) {
-      //       setState(() {
-      //         devices.add(result.device);
-      //       });
-      //     }
-      //   }
-      // });
-      var subscription = flutterBlue.scanResults.listen((results) {
-        print("results: $results");
-        for (ScanResult r in results) {
-          print("result: $r");
-          if (!devices.contains(r)) {
-            setState(() {
-              devices.add(r.device);
-            });
-          }
-        }
-      });
-      flutterBlue.stopScan();
-      print("stop scanning");
-    } catch (e) {
-      print("Error starting scan: $e");
-    }
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 5),
+    )..repeat();
   }
 
   @override
   void dispose() {
-    flutterBlue.stopScan();
+    _animationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text(
-          widget.title,
-          style:
-              const TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
-        ),
-      ),
-      body: ListView.builder(
-        itemCount: devices.length,
-        itemBuilder: (context, index) {
-          final device = devices[index];
-          return ListTile(
-            title: Text(device.name),
-            subtitle: Text(device.id.toString()),
-            onTap: () {
-              // Handle device selection
-            },
-          );
-        },
-      ),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(shape: BoxShape.circle),
-        child: FloatingActionButton(
-          onPressed: () {
-            devices.clear();
-            scanForDevices();
-          },
-          tooltip: 'Scan',
-          child: Icon(Icons.bluetooth),
-        ),
+      backgroundColor: Color(0xFFF95223),
+      body: Stack(
+        children: <Widget>[
+          Positioned(
+              top: 0,
+              left: 0,
+              child: AnimatedBuilder(
+                animation: _animationController,
+                builder: (context, child) {
+                  return Transform.translate(
+                    offset: Offset(0.0, 200 * _animationController.value),
+                    child: Transform.rotate(
+                      angle: -1.5708, // 90 degrees in radians
+                      child: Text(
+                        "Safeguard",
+                        style: TextStyle(
+                          fontFamily: 'Moonhouse',
+                          fontSize: 24,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              )),
+          Positioned(
+              top: 16.0,
+              left: 16.0,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Image.asset("assets/images/safeguard.png",
+                    width: 40, height: 40),
+              )),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "SEEKER",
+                  style: TextStyle(
+                      fontFamily: 'Moonhouse',
+                      fontSize: 40,
+                      color: Colors.white),
+                ),
+                SizedBox(height: 60),
+                ButtonBig(
+                    text: 'Pindai Kode QR',
+                    imgUrl: 'assets/images/pindaiqr.png',
+                    goTo: ScanScreen()),
+                SizedBox(height: 60),
+                ButtonBig(
+                    text: 'Lacak Korban',
+                    imgUrl: 'assets/images/lacak.png',
+                    goTo: TrackScreen()),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 }
+
+// class MyHomePage extends StatefulWidget {
+//   const MyHomePage({super.key, required this.title});
+
+//   final String title;
+
+//   @override
+//   State<MyHomePage> createState() => _MyHomePageState();
+// }
+
+// class _MyHomePageState extends State<MyHomePage> {
+//   final FlutterBlue flutterBlue = FlutterBlue.instance;
+//   List<BluetoothDevice> devices = [];
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     scanForDevices();
+//   }
+
+//   void scanForDevices() {
+//     print("Start scan");
+//     try {
+//       flutterBlue.startScan(timeout: Duration(seconds: 4));
+//       // flutterBlue.scanResults.listen((List<ScanResult> results) {
+//       //   print("Get scan: $results");
+//       //   for (ScanResult result in results) {
+//       //     if (!devices.contains(result.device)) {
+//       //       setState(() {
+//       //         devices.add(result.device);
+//       //       });
+//       //     }
+//       //   }
+//       // });
+//       var subscription = flutterBlue.scanResults.listen((results) {
+//         print("results: $results");
+//         for (ScanResult r in results) {
+//           print("result: $r");
+//           if (!devices.contains(r)) {
+//             setState(() {
+//               devices.add(r.device);
+//             });
+//           }
+//         }
+//       });
+//       // flutterBlue.stopScan();
+//       // print("stop scanning");
+//     } catch (e) {
+//       print("Error starting scan: $e");
+//     }
+//   }
+
+//   @override
+//   void dispose() {
+//     flutterBlue.stopScan();
+//     super.dispose();
+//   }
+
+//   // @override
+//   // Widget build(BuildContext context) {
+//   //   return Scaffold(
+//   //     appBar: AppBar(
+//   //       backgroundColor: Theme.of(context).colorScheme.primary,
+//   //       title: Text(
+//   //         widget.title,
+//   //         style:
+//   //             const TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
+//   //       ),
+//   //     ),
+//   //     body: ListView.builder(
+//   //       itemCount: devices.length,
+//   //       itemBuilder: (context, index) {
+//   //         final device = devices[index];
+//   //         return ListTile(
+//   //           title: Text(device.name),
+//   //           subtitle: Text(device.id.toString()),
+//   //           onTap: () {
+//   //             // Handle device selection
+//   //           },
+//   //         );
+//   //       },
+//   //     ),
+//   //     floatingActionButton: Container(
+//   //       decoration: BoxDecoration(shape: BoxShape.circle),
+//   //       child: FloatingActionButton(
+//   //         onPressed: () {
+//   //           devices.clear();
+//   //           scanForDevices();
+//   //         },
+//   //         tooltip: 'Scan',
+//   //         child: Icon(Icons.bluetooth),
+//   //       ),
+//   //     ),
+//   //   );
+//   // }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: ListView.builder(
+//         itemCount: devices.length,
+//         itemBuilder: (context, index) {
+//           final device = devices[index];
+//           return ListTile(
+//             title: Text(device.name),
+//             subtitle: Text(device.id.toString()),
+//             onTap: () {
+//               // Handle device selection
+//             },
+//           );
+//         },
+//       ),
+//       floatingActionButton: Container(
+//         decoration: BoxDecoration(shape: BoxShape.circle),
+//         child: FloatingActionButton(
+//           onPressed: () {
+//             devices.clear();
+//             scanForDevices();
+//           },
+//           tooltip: 'Scan',
+//           child: Icon(Icons.bluetooth),
+//         ),
+//       ),
+//     );
+//   }
+// }
