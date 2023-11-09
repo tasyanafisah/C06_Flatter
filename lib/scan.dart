@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ScanScreen extends StatefulWidget {
+  const ScanScreen({super.key});
+
   @override
   State<ScanScreen> createState() => _ScanScreenState();
 }
@@ -13,22 +16,22 @@ class _ScanScreenState extends State<ScanScreen> {
   Barcode? result;
   QRViewController? controller;
 
-  // @override
-  // void reassemble() {
-  //   super.reassemble();
-  //   if (Platform.isAndroid) {
-  //     controller!.pauseCamera();
-  //   } else if (Platform.isIOS) {
-  //     controller!.resumeCamera();
-  //   }
-  // }
+  @override
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      controller!.pauseCamera();
+    } else if (Platform.isIOS) {
+      controller!.resumeCamera();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Color(0xFFF95223),
+        backgroundColor: const Color(0xFFF95223),
         title: const Text(
           'Safeguard',
           style: TextStyle(
@@ -55,7 +58,7 @@ class _ScanScreenState extends State<ScanScreen> {
       ),
       body: Stack(
         children: <Widget>[
-          Container(
+          SizedBox(
             width: double.infinity,
             child: Column(
               children: <Widget>[
@@ -67,10 +70,10 @@ class _ScanScreenState extends State<ScanScreen> {
                 ),
                 Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.all(12.0),
                   child: Column(
                     children: [
-                      SizedBox(height: 4.0),
+                      const SizedBox(height: 4.0),
                       const Text(
                         "Instruksi",
                         style: TextStyle(
@@ -83,23 +86,24 @@ class _ScanScreenState extends State<ScanScreen> {
                           child: Center(
                         child: (result != null)
                             ? Text('Data: ${result!.code}')
-                            : Text('Scan a QR'),
+                            : const Text('Scan a QR'),
                       )),
-                      SizedBox(height: 24.0),
+                      const SizedBox(height: 24.0),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 12.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12.0),
                               child: Column(
                                 children: [
                                   Image.asset("assets/images/angka1.png",
                                       width: 25, height: 25),
-                                  SizedBox(height: 8.0),
+                                  const SizedBox(height: 8.0),
                                   Image.asset("assets/images/gbr1.png",
                                       width: 65, height: 65),
-                                  SizedBox(height: 8.0),
+                                  const SizedBox(height: 8.0),
                                   const Text(
                                     'Pindai Kode QR',
                                     style: TextStyle(
@@ -111,15 +115,16 @@ class _ScanScreenState extends State<ScanScreen> {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 12.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12.0),
                               child: Column(
                                 children: [
                                   Image.asset("assets/images/angka2.png",
                                       width: 25, height: 25),
-                                  SizedBox(height: 8.0),
+                                  const SizedBox(height: 8.0),
                                   Image.asset("assets/images/gbr2.png",
                                       width: 65, height: 65),
-                                  SizedBox(height: 8.0),
+                                  const SizedBox(height: 8.0),
                                   const Text(
                                     'Menuju ke \nlokasi dengan \nbantuan \nGoogle Maps',
                                     softWrap: true,
@@ -133,15 +138,16 @@ class _ScanScreenState extends State<ScanScreen> {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 12.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12.0),
                               child: Column(
                                 children: [
                                   Image.asset("assets/images/angka3.png",
                                       width: 25, height: 25),
-                                  SizedBox(height: 8.0),
+                                  const SizedBox(height: 8.0),
                                   Image.asset("assets/images/gbr3.png",
                                       width: 65, height: 65),
-                                  SizedBox(height: 8.0),
+                                  const SizedBox(height: 8.0),
                                   const Text(
                                     'Lacak Korban',
                                     style: TextStyle(
@@ -175,11 +181,12 @@ class _ScanScreenState extends State<ScanScreen> {
   }
 
   void onQRviewCamera(QRViewController p1) {
-    this.controller = p1;
+    controller = p1;
     controller?.scannedDataStream.listen((scanData) {
       setState(() {
         result = scanData;
       });
+      checkingValue();
     });
   }
 
@@ -187,5 +194,33 @@ class _ScanScreenState extends State<ScanScreen> {
   void dispose() {
     controller?.dispose();
     super.dispose();
+  }
+
+  bool isLaunched = false;
+  checkingValue() {
+    if (result != null && !isLaunched) {
+      if (result!.code!.contains("https") || result!.code!.contains("http")) {
+        _launchURL(result!.code!);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Invalid URL"),
+        ));
+      }
+    }
+  }
+
+  _launchURL(String urlQRCode) async {
+    Uri url = Uri.parse(urlQRCode);
+    print("Launch url: $urlQRCode");
+    try {
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalNonBrowserApplication);
+        isLaunched = true;
+      } else {
+        throw 'Could not launch $url';
+      }
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }

@@ -5,7 +5,7 @@ class ButtonBig extends StatelessWidget {
   final String imgUrl;
   final Widget goTo;
 
-  ButtonBig({required this.text, required this.imgUrl, required this.goTo});
+  const ButtonBig({super.key, required this.text, required this.imgUrl, required this.goTo});
 
   @override
   Widget build(BuildContext context) {

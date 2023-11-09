@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Safeguard',
       home: LandingScreen(),
     );
@@ -22,6 +22,8 @@ class MyApp extends StatelessWidget {
 }
 
 class LandingScreen extends StatefulWidget {
+  const LandingScreen({super.key});
+
   @override
   _LandingScreenState createState() => _LandingScreenState();
 }
@@ -35,7 +37,7 @@ class _LandingScreenState extends State<LandingScreen>
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 5),
+      duration: const Duration(seconds: 5),
     )..repeat();
   }
 
@@ -48,7 +50,7 @@ class _LandingScreenState extends State<LandingScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF95223),
+      backgroundColor: const Color(0xFFF95223),
       body: Stack(
         children: <Widget>[
           Positioned(
@@ -56,7 +58,7 @@ class _LandingScreenState extends State<LandingScreen>
             left: 16.0,
             child: Image.asset("assets/images/safeguard.png", width: 100),
           ),
-          Center(
+          const Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[

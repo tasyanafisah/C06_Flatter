@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 class TrackScreen extends StatelessWidget {
+  const TrackScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Color(0xFFF95223),
+        backgroundColor: const Color(0xFFF95223),
         title: const Text(
           'Safeguard',
           style: TextStyle(
@@ -31,7 +33,7 @@ class TrackScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
