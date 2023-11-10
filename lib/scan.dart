@@ -214,7 +214,7 @@ class _ScanScreenState extends State<ScanScreen> {
     print("Launch url: $urlQRCode");
     try {
       if (await canLaunchUrl(url)) {
-        await launchUrl(url, mode: LaunchMode.externalNonBrowserApplication);
+        await launchUrl(url, mode: LaunchMode.inAppWebView);
         isLaunched = true;
       } else {
         throw 'Could not launch $url';

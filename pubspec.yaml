@@ -10,6 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  wifi_hunter: ^1.1.1+2
+  qr_code_scanner: ^1.0.1
+  url_launcher: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -17,8 +20,6 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   # flutter_blue: ^0.8.0
   scroll_loop_auto_scroll: ^0.0.2
-  qr_code_scanner: ^1.0.1
-  url_launcher: ^6.2.1
 
 flutter:
   uses-material-design: true
