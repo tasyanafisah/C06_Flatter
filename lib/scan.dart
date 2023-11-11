@@ -82,12 +82,12 @@ class _ScanScreenState extends State<ScanScreen> {
                           color: Color(0xFFF95223),
                         ),
                       ),
-                      Container(
-                          child: Center(
-                        child: (result != null)
-                            ? Text('Data: ${result!.code}')
-                            : const Text('Scan a QR'),
-                      )),
+                      // Container(
+                      //     child: Center(
+                      //   child: (result != null)
+                      //       ? Text('Data: ${result!.code}')
+                      //       : const Text('Scan a QR'),
+                      // )),
                       const SizedBox(height: 24.0),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
