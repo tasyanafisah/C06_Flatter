@@ -1,4 +1,4 @@
-# flutter_ble_manager
+# capstone_safeguard_flutter
 
 A new Flutter project.
 

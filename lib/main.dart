@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ble_manager/components/buttonbig.dart';
-import 'package:flutter_ble_manager/scan.dart';
-import 'package:flutter_ble_manager/track.dart';
+import 'package:capstone_safeguard_flutter/components/buttonbig.dart';
+import 'package:capstone_safeguard_flutter/scan.dart';
+import 'package:capstone_safeguard_flutter/track.dart';
 // import 'package:scroll_loop_auto_scroll/scroll_loop_auto_scroll.dart';
 // import 'package:flutter_blue/flutter_blue.dart';
 
