@@ -224,115 +224,122 @@ class _AccessPointTile extends StatelessWidget {
         : Icons.signal_wifi_0_bar;
 
     return Container(
-      width: double.infinity,
-      margin: EdgeInsets.only(bottom: 12.0),
-      decoration: BoxDecoration(
-        color: Color(0xFF1C4C74),
-        borderRadius: BorderRadius.circular(6.0),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width * 0.25,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(6.0),
-                bottomLeft: Radius.circular(6.0),
-              ),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 20.0),
-            child: Column(
+        width: double.infinity,
+        margin: EdgeInsets.only(bottom: 12.0),
+        decoration: BoxDecoration(
+          color: Color(0xFF1C4C74),
+          borderRadius: BorderRadius.circular(6.0),
+        ),
+        child: Stack(
+          children: [
+            Row(
               children: [
-                Text(
-                  getDistance(accessPoint.level),
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 2.0),
-                Text("Meter",
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-              ],
-            ),
-          ),
-          Container(
-            color: Colors.transparent,
-            padding: EdgeInsets.only(left: 8.0),
-            child: Flex(
-              direction: Axis.vertical,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(2.0),
-                  child: Text(
-                    "SSID:",
-                    style: TextStyle(
-                        color: Colors.white, fontSize: 11.0), // Text color
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(2.0),
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600), // Text color
-                  ),
-                ),
-                SizedBox(height: 8.0),
-                Padding(
-                  padding: EdgeInsets.all(2.0),
-                  child: Text(
-                    "Kekuatan Sinyal:",
-                    style: TextStyle(
-                        color: Colors.white, fontSize: 11.0), // Text color
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(2.0),
-                  child: Text(
-                    "${accessPoint.level.toString()}db",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600), // Text color
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 6.0),
-            child: Flex(
-              direction: Axis.horizontal,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Material(
-                  elevation: 2.0, // Set the elevation value
-                  shadowColor: Colors.white, // Set the shadow color
-                  borderRadius: BorderRadius.circular(6.0),
-                  child: Container(
-                    width: 56.0,
-                    height: 56.0,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFF95223),
-                      borderRadius: BorderRadius.circular(6.0),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.25,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(6.0),
+                      bottomLeft: Radius.circular(6.0),
                     ),
-                    child: Center(
-                      child: Text(
-                        "Lacak",
+                  ),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 4.0, vertical: 20.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        getDistance(accessPoint.level),
                         style: TextStyle(
-                          color: Colors.white,
+                            fontSize: 30, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 2.0),
+                      Text("Meter",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w600)),
+                    ],
+                  ),
+                ),
+                Container(
+                  color: Colors.transparent,
+                  padding: EdgeInsets.only(left: 8.0),
+                  child: Flex(
+                    direction: Axis.vertical,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(2.0),
+                        child: Text(
+                          "SSID:",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 11.0), // Text color
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(2.0),
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600), // Text color
+                        ),
+                      ),
+                      SizedBox(height: 8.0),
+                      Padding(
+                        padding: EdgeInsets.all(2.0),
+                        child: Text(
+                          "Kekuatan Sinyal:",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 11.0), // Text color
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(2.0),
+                        child: Text(
+                          "${accessPoint.level.toString()}db",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600), // Text color
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Positioned(
+              right: 8.0,
+              bottom: 22,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Material(
+                    elevation: 2.0, // Set the elevation value
+                    shadowColor: Colors.white, // Set the shadow color
+                    borderRadius: BorderRadius.circular(6.0),
+                    child: Container(
+                      width: 56.0,
+                      height: 56.0,
+                      decoration: BoxDecoration(
+                        color: Color(0xFFF95223),
+                        borderRadius: BorderRadius.circular(6.0),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Lacak",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ));
     // return ListTile(
     //   leading: Icon(signalIcon),
     //   title: Text(title),
