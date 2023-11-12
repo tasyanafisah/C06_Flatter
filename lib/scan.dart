@@ -211,7 +211,6 @@ class _ScanScreenState extends State<ScanScreen> {
 
   _launchURL(String urlQRCode) async {
     Uri url = Uri.parse(urlQRCode);
-    print("Launch url: $urlQRCode");
     try {
       if (await canLaunchUrl(url)) {
         await launchUrl(url, mode: LaunchMode.inAppWebView);

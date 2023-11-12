@@ -309,67 +309,65 @@ class _AccessPointTile extends StatelessWidget {
               ],
             ),
             Positioned(
-              right: 8.0,
-              bottom: 22,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Material(
-                    elevation: 2.0, // Set the elevation value
-                    shadowColor: Colors.white, // Set the shadow color
-                    borderRadius: BorderRadius.circular(6.0),
-                    child: Container(
-                      width: 56.0,
-                      height: 56.0,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFF95223),
-                        borderRadius: BorderRadius.circular(6.0),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Lacak",
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
+                right: 8.0,
+                bottom: 22,
+                child: GestureDetector(
+                  onTap: () => showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text(title),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _buildInfo("BSSDI", accessPoint.bssid),
+                          _buildInfo("Capability", accessPoint.capabilities),
+                          _buildInfo(
+                              "frequency", "${accessPoint.frequency}MHz"),
+                          _buildInfo("level", accessPoint.level),
+                          _buildInfo("standard", accessPoint.standard),
+                          _buildInfo("centerFrequency0",
+                              "${accessPoint.centerFrequency0}MHz"),
+                          _buildInfo("centerFrequency1",
+                              "${accessPoint.centerFrequency1}MHz"),
+                          _buildInfo("channelWidth", accessPoint.channelWidth),
+                          _buildInfo("isPasspoint", accessPoint.isPasspoint),
+                          _buildInfo("operatorFriendlyName",
+                              accessPoint.operatorFriendlyName),
+                          _buildInfo("venueName", accessPoint.venueName),
+                          _buildInfo("is80211mcResponder",
+                              accessPoint.is80211mcResponder),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
-            ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Material(
+                        elevation: 2.0, // Set the elevation value
+                        shadowColor: Colors.white, // Set the shadow color
+                        borderRadius: BorderRadius.circular(6.0),
+                        child: Container(
+                          width: 56.0,
+                          height: 56.0,
+                          decoration: BoxDecoration(
+                            color: Color(0xFFF95223),
+                            borderRadius: BorderRadius.circular(6.0),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Lacak",
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
           ],
         ));
-    // return ListTile(
-    //   leading: Icon(signalIcon),
-    //   title: Text(title),
-    //   subtitle: Text(accessPoint.capabilities),
-    //   onTap: () => showDialog(
-    //     context: context,
-    //     builder: (context) => AlertDialog(
-    //       title: Text(title),
-    //       content: Column(
-    //         mainAxisSize: MainAxisSize.min,
-    //         children: [
-    //           _buildInfo("BSSDI", accessPoint.bssid),
-    //           _buildInfo("Capability", accessPoint.capabilities),
-    //           _buildInfo("frequency", "${accessPoint.frequency}MHz"),
-    //           _buildInfo("level", accessPoint.level),
-    //           _buildInfo("standard", accessPoint.standard),
-    //           _buildInfo(
-    //               "centerFrequency0", "${accessPoint.centerFrequency0}MHz"),
-    //           _buildInfo(
-    //               "centerFrequency1", "${accessPoint.centerFrequency1}MHz"),
-    //           _buildInfo("channelWidth", accessPoint.channelWidth),
-    //           _buildInfo("isPasspoint", accessPoint.isPasspoint),
-    //           _buildInfo(
-    //               "operatorFriendlyName", accessPoint.operatorFriendlyName),
-    //           _buildInfo("venueName", accessPoint.venueName),
-    //           _buildInfo("is80211mcResponder", accessPoint.is80211mcResponder),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 }
