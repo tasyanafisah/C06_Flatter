@@ -64,20 +64,16 @@ class _TrackScreenState extends State<TrackScreen> {
   // }
 
   Future<void> _startListeningToScanResults(BuildContext context) async {
-    print("Scanning");
     if (await _canGetScannedResults(context)) {
       subscription = WiFiScan.instance.onScannedResultsAvailable.listen(
         (result) {
           setState(() {
             accessPoints = result;
           });
-          print("Scan Stream Result: $result");
         },
-        onDone: () {
-          print("Scan Stream Done");
-        },
+        onDone: () {},
         onError: (error) {
-          print("Scan Stream Error: $error");
+          if (mounted) kShowSnackBar(context, "Scan stream error: $error");
         },
       );
     }

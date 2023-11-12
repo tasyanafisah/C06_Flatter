@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -219,7 +219,14 @@ class _ScanScreenState extends State<ScanScreen> {
         throw 'Could not launch $url';
       }
     } catch (e) {
-      print(e.toString());
+      if (mounted) kShowSnackBar(context, "Launch URL error: $e");
     }
   }
+}
+
+void kShowSnackBar(BuildContext context, String message) {
+  if (kDebugMode) print(message);
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(content: Text(message)));
 }
