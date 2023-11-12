@@ -149,8 +149,8 @@ class _TrackScreenState extends State<TrackScreen> {
                         color: Color(0xFFF95223),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
-                      margin: EdgeInsets.symmetric(horizontal: 24.0),
-                      padding: EdgeInsets.all(24.0),
+                      margin: EdgeInsets.symmetric(horizontal: 18.0),
+                      padding: EdgeInsets.all(18.0),
                       child: accessPoints.isEmpty
                           ? const Text(
                               "Tidak ada hasil scan Wi-Fi",
