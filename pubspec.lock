@@ -277,6 +277,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.4-beta"
+  wifi_connector:
+    dependency: "direct main"
+    description:
+      name: wifi_connector
+      sha256: "77bce2f58b2a371595d14afba9684bd28a34cad1129ad6fc22cb6c3dd0fec236"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   wifi_scan:
     dependency: "direct main"
     description:

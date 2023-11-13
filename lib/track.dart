@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 import 'package:flutter/foundation.dart';
+import 'package:wifi_connector/wifi_connector.dart';
 
 class TrackScreen extends StatefulWidget {
   const TrackScreen({super.key});
@@ -14,6 +15,7 @@ class TrackScreen extends StatefulWidget {
 class _TrackScreenState extends State<TrackScreen> {
   List<WiFiAccessPoint> accessPoints = <WiFiAccessPoint>[];
   StreamSubscription<List<WiFiAccessPoint>>? subscription;
+  var _isSuccessConnect = false;
 
   @override
   void initState() {
@@ -23,12 +25,16 @@ class _TrackScreenState extends State<TrackScreen> {
 
   @override
   void dispose() {
+    //   setState(() => subscription = null);
     _stopListeningToScanResults();
     super.dispose();
   }
 
   bool shouldCheckCan = true;
   bool get isStreaming => subscription != null;
+
+  final _currSsid = '';
+  final _currPassword = '12345678';
 
   // Future<void> _startScan(BuildContext context) async {
   //   if (shouldCheckCan) {
@@ -79,6 +85,16 @@ class _TrackScreenState extends State<TrackScreen> {
     }
   }
 
+  Future<void> _onConnectPressed() async {
+    print("Okay");
+    // final ssid = _currSsid;
+    // final password = _currPassword;
+    // setState(() => _isSuccessConnect = false);
+    // final isSucceed =
+    //     await WifiConnector.connectToWifi(ssid: ssid, password: password);
+    // setState(() => _isSuccessConnect = isSucceed);
+  } // hwo to call this function in the Lacak button in access point tile
+
   void _stopListeningToScanResults() {
     // if (mounted) {
     //   setState(() => subscription = null);
@@ -122,31 +138,31 @@ class _TrackScreenState extends State<TrackScreen> {
             width: double.infinity,
             child: Column(
               children: <Widget>[
-                SizedBox(height: 64),
-                Text(
+                const SizedBox(height: 64),
+                const Text(
                   'Alat yang',
                   style: TextStyle(
                       fontSize: 32.0,
                       color: Color(0xFFF95223),
                       fontWeight: FontWeight.bold),
                 ),
-                Text(
+                const Text(
                   'Terdeteksi',
                   style: TextStyle(
                       fontSize: 32.0,
                       color: Color(0xFFF95223),
                       fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 24.0),
+                const SizedBox(height: 24.0),
                 Expanded(
                   child: Center(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Color(0xFFF95223),
+                        color: const Color(0xFFF95223),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
-                      margin: EdgeInsets.symmetric(horizontal: 18.0),
-                      padding: EdgeInsets.all(18.0),
+                      margin: const EdgeInsets.symmetric(horizontal: 18.0),
+                      padding: const EdgeInsets.all(18.0),
                       child: accessPoints.isEmpty
                           ? const Text(
                               "Tidak ada hasil scan Wi-Fi",
@@ -155,7 +171,11 @@ class _TrackScreenState extends State<TrackScreen> {
                           : ListView.builder(
                               itemCount: accessPoints.length,
                               itemBuilder: (context, i) => _AccessPointTile(
-                                  accessPoint: accessPoints[i])),
+                                accessPoint: accessPoints[i],
+                                onLacakPressed: () =>
+                                    _onConnectPressed(), // Pass the function
+                              ),
+                            ),
                     ),
                   ),
                 ),
@@ -187,14 +207,16 @@ void kShowSnackBar(BuildContext context, String message) {
 
 String getDistance(int rssi) {
   double distance;
-  distance = pow(10, ((-44 - rssi) / (10 * 2.7))).toDouble();
+  distance = pow(10, ((-44 - rssi) / (10 * 2.99))).toDouble();
   return distance.toStringAsFixed(1);
 }
 
 class _AccessPointTile extends StatelessWidget {
   final WiFiAccessPoint accessPoint;
+  final Function onLacakPressed;
 
-  const _AccessPointTile({Key? key, required this.accessPoint})
+  const _AccessPointTile(
+      {Key? key, required this.accessPoint, required this.onLacakPressed})
       : super(key: key);
 
   Widget _buildInfo(String label, dynamic value) => Container(
@@ -221,9 +243,9 @@ class _AccessPointTile extends StatelessWidget {
 
     return Container(
         width: double.infinity,
-        margin: EdgeInsets.only(bottom: 12.0),
+        margin: const EdgeInsets.only(bottom: 12.0),
         decoration: BoxDecoration(
-          color: Color(0xFF1C4C74),
+          color: const Color(0xFF1C4C74),
           borderRadius: BorderRadius.circular(6.0),
         ),
         child: Stack(
@@ -232,24 +254,24 @@ class _AccessPointTile extends StatelessWidget {
               children: [
                 Container(
                   width: MediaQuery.of(context).size.width * 0.25,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(6.0),
                       bottomLeft: Radius.circular(6.0),
                     ),
                   ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 4.0, vertical: 20.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 4.0, vertical: 20.0),
                   child: Column(
                     children: [
                       Text(
                         getDistance(accessPoint.level),
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 30, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 2.0),
-                      Text("Meter",
+                      const SizedBox(height: 2.0),
+                      const Text("Meter",
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.w600)),
                     ],
@@ -257,12 +279,12 @@ class _AccessPointTile extends StatelessWidget {
                 ),
                 Container(
                   color: Colors.transparent,
-                  padding: EdgeInsets.only(left: 8.0),
+                  padding: const EdgeInsets.only(left: 8.0),
                   child: Flex(
                     direction: Axis.vertical,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
+                      const Padding(
                         padding: EdgeInsets.all(2.0),
                         child: Text(
                           "SSID:",
@@ -272,16 +294,16 @@ class _AccessPointTile extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.all(2.0),
+                        padding: const EdgeInsets.all(2.0),
                         child: Text(
                           title,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600), // Text color
                         ),
                       ),
-                      SizedBox(height: 8.0),
-                      Padding(
+                      const SizedBox(height: 8.0),
+                      const Padding(
                         padding: EdgeInsets.all(2.0),
                         child: Text(
                           "Kekuatan Sinyal:",
@@ -291,10 +313,10 @@ class _AccessPointTile extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.all(2.0),
+                        padding: const EdgeInsets.all(2.0),
                         child: Text(
                           "${accessPoint.level.toString()}db",
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600), // Text color
                         ),
@@ -308,34 +330,38 @@ class _AccessPointTile extends StatelessWidget {
                 right: 8.0,
                 bottom: 22,
                 child: GestureDetector(
-                  onTap: () => showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text(title),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _buildInfo("BSSDI", accessPoint.bssid),
-                          _buildInfo("Capability", accessPoint.capabilities),
-                          _buildInfo(
-                              "frequency", "${accessPoint.frequency}MHz"),
-                          _buildInfo("level", accessPoint.level),
-                          _buildInfo("standard", accessPoint.standard),
-                          _buildInfo("centerFrequency0",
-                              "${accessPoint.centerFrequency0}MHz"),
-                          _buildInfo("centerFrequency1",
-                              "${accessPoint.centerFrequency1}MHz"),
-                          _buildInfo("channelWidth", accessPoint.channelWidth),
-                          _buildInfo("isPasspoint", accessPoint.isPasspoint),
-                          _buildInfo("operatorFriendlyName",
-                              accessPoint.operatorFriendlyName),
-                          _buildInfo("venueName", accessPoint.venueName),
-                          _buildInfo("is80211mcResponder",
-                              accessPoint.is80211mcResponder),
-                        ],
+                  onTap: () {
+                    onLacakPressed();
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text(title),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _buildInfo("BSSDI", accessPoint.bssid),
+                            _buildInfo("Capability", accessPoint.capabilities),
+                            _buildInfo(
+                                "frequency", "${accessPoint.frequency}MHz"),
+                            _buildInfo("level", accessPoint.level),
+                            _buildInfo("standard", accessPoint.standard),
+                            _buildInfo("centerFrequency0",
+                                "${accessPoint.centerFrequency0}MHz"),
+                            _buildInfo("centerFrequency1",
+                                "${accessPoint.centerFrequency1}MHz"),
+                            _buildInfo(
+                                "channelWidth", accessPoint.channelWidth),
+                            _buildInfo("isPasspoint", accessPoint.isPasspoint),
+                            _buildInfo("operatorFriendlyName",
+                                accessPoint.operatorFriendlyName),
+                            _buildInfo("venueName", accessPoint.venueName),
+                            _buildInfo("is80211mcResponder",
+                                accessPoint.is80211mcResponder),
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -347,10 +373,10 @@ class _AccessPointTile extends StatelessWidget {
                           width: 56.0,
                           height: 56.0,
                           decoration: BoxDecoration(
-                            color: Color(0xFFF95223),
+                            color: const Color(0xFFF95223),
                             borderRadius: BorderRadius.circular(6.0),
                           ),
-                          child: Center(
+                          child: const Center(
                             child: Text(
                               "Lacak",
                               style: TextStyle(
