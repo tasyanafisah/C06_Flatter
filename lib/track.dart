@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:wifi_connector/wifi_connector.dart';
 
 import 'package:capstone_safeguard_flutter/tracking_direction.dart';
+import 'package:capstone_safeguard_flutter/controller/track_screen_controller.dart';
 
 class TrackScreen extends StatefulWidget {
   const TrackScreen({super.key});
@@ -15,6 +16,7 @@ class TrackScreen extends StatefulWidget {
 }
 
 class _TrackScreenState extends State<TrackScreen> {
+  TrackScreenController trackScreenController = TrackScreenController();
   List<WiFiAccessPoint> accessPoints = <WiFiAccessPoint>[];
   StreamSubscription<List<WiFiAccessPoint>>? subscription;
   var _isSuccessConnect = false;
@@ -34,8 +36,8 @@ class _TrackScreenState extends State<TrackScreen> {
   bool shouldCheckCan = true;
   bool get isStreaming => subscription != null;
 
-  String _currSsid = '';
-  String _currPassword = '2JER4B4J9MN';
+  final String _currSsid = '';
+  final String _currPassword = '2JER4B4J9MN';
 
   Future<bool> _canGetScannedResults(BuildContext context) async {
     if (shouldCheckCan) {
@@ -55,6 +57,7 @@ class _TrackScreenState extends State<TrackScreen> {
         (result) {
           setState(() {
             accessPoints = result;
+            trackScreenController.updateAccessPoints(result);
           });
         },
         onDone: () {},
@@ -68,7 +71,7 @@ class _TrackScreenState extends State<TrackScreen> {
   Future<void> _onConnectPressed() async {
     final ssid = _currSsid;
     final password = _currPassword;
-    print("Starting Connection ${ssid} with ${password}");
+    print("Starting Connection $ssid with $password");
     setState(() => _isSuccessConnect = false);
     final isSucceed =
         await WifiConnector.connectToWifi(ssid: ssid, password: password);
@@ -156,12 +159,17 @@ class _TrackScreenState extends State<TrackScreen> {
                                 //   _onConnectPressed();
                                 //
                                 onLacakPressed: () {
+                                  trackScreenController
+                                      .updateCurrAp(accessPoints[i]);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            TrackingDirectionScreen(
-                                                ap: accessPoints[i])),
+                                      builder: (context) =>
+                                          TrackingDirectionScreen(
+                                        trackScreenController:
+                                            trackScreenController,
+                                      ),
+                                    ),
                                   );
                                 },
                               ),
@@ -227,9 +235,6 @@ class _AccessPointTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final title = accessPoint.ssid.isNotEmpty ? accessPoint.ssid : "**EMPTY**";
-    final signalIcon = accessPoint.level >= -80
-        ? Icons.signal_wifi_4_bar
-        : Icons.signal_wifi_0_bar;
 
     return Container(
         width: double.infinity,
@@ -322,35 +327,6 @@ class _AccessPointTile extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () {
                     onLacakPressed();
-                    //   showDialog(
-                    //     context: context,
-                    //     builder: (context) => AlertDialog(
-                    //       title: Text(title),
-                    //       content: Column(
-                    //         mainAxisSize: MainAxisSize.min,
-                    //         children: [
-                    //           _buildInfo("BSSDI", accessPoint.bssid),
-                    //           _buildInfo("Capability", accessPoint.capabilities),
-                    //           _buildInfo(
-                    //               "frequency", "${accessPoint.frequency}MHz"),
-                    //           _buildInfo("level", accessPoint.level),
-                    //           _buildInfo("standard", accessPoint.standard),
-                    //           _buildInfo("centerFrequency0",
-                    //               "${accessPoint.centerFrequency0}MHz"),
-                    //           _buildInfo("centerFrequency1",
-                    //               "${accessPoint.centerFrequency1}MHz"),
-                    //           _buildInfo(
-                    //               "channelWidth", accessPoint.channelWidth),
-                    //           _buildInfo("isPasspoint", accessPoint.isPasspoint),
-                    //           _buildInfo("operatorFriendlyName",
-                    //               accessPoint.operatorFriendlyName),
-                    //           _buildInfo("venueName", accessPoint.venueName),
-                    //           _buildInfo("is80211mcResponder",
-                    //               accessPoint.is80211mcResponder),
-                    //         ],
-                    //       ),
-                    //     ),
-                    //   );
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
