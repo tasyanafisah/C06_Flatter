@@ -5,6 +5,8 @@ import 'package:wifi_scan/wifi_scan.dart';
 import 'package:flutter/foundation.dart';
 import 'package:wifi_connector/wifi_connector.dart';
 
+import 'package:capstone_safeguard_flutter/tracking_direction.dart';
+
 class TrackScreen extends StatefulWidget {
   const TrackScreen({super.key});
 
@@ -25,7 +27,6 @@ class _TrackScreenState extends State<TrackScreen> {
 
   @override
   void dispose() {
-    //   setState(() => subscription = null);
     _stopListeningToScanResults();
     super.dispose();
   }
@@ -33,22 +34,8 @@ class _TrackScreenState extends State<TrackScreen> {
   bool shouldCheckCan = true;
   bool get isStreaming => subscription != null;
 
-  final _currSsid = '';
-  final _currPassword = '12345678';
-
-  // Future<void> _startScan(BuildContext context) async {
-  //   if (shouldCheckCan) {
-  //     final can = await WiFiScan.instance.canStartScan();
-  //     if (can != CanStartScan.yes) {
-  //       if (mounted) kShowSnackBar(context, "Cannot start scan: $can");
-  //       return;
-  //     }
-  //   }
-
-  //   final result = await WiFiScan.instance.startScan();
-  //   if (mounted) kShowSnackBar(context, "startScan: $result");
-  //   setState(() => accessPoints = <WiFiAccessPoint>[]);
-  // }
+  String _currSsid = '';
+  String _currPassword = '2JER4B4J9MN';
 
   Future<bool> _canGetScannedResults(BuildContext context) async {
     if (shouldCheckCan) {
@@ -61,13 +48,6 @@ class _TrackScreenState extends State<TrackScreen> {
     }
     return true;
   }
-
-  // Future<void> _getScannedResults(BuildContext context) async {
-  //   if (await _canGetScannedResults(context)) {
-  //     final results = await WiFiScan.instance.getScannedResults();
-  //     setState(() => accessPoints = results);
-  //   }
-  // }
 
   Future<void> _startListeningToScanResults(BuildContext context) async {
     if (await _canGetScannedResults(context)) {
@@ -86,19 +66,17 @@ class _TrackScreenState extends State<TrackScreen> {
   }
 
   Future<void> _onConnectPressed() async {
-    print("Okay");
-    // final ssid = _currSsid;
-    // final password = _currPassword;
-    // setState(() => _isSuccessConnect = false);
-    // final isSucceed =
-    //     await WifiConnector.connectToWifi(ssid: ssid, password: password);
-    // setState(() => _isSuccessConnect = isSucceed);
-  } // hwo to call this function in the Lacak button in access point tile
+    final ssid = _currSsid;
+    final password = _currPassword;
+    print("Starting Connection ${ssid} with ${password}");
+    setState(() => _isSuccessConnect = false);
+    final isSucceed =
+        await WifiConnector.connectToWifi(ssid: ssid, password: password);
+    setState(() => _isSuccessConnect = isSucceed);
+    print(_isSuccessConnect);
+  }
 
   void _stopListeningToScanResults() {
-    // if (mounted) {
-    //   setState(() => subscription = null);
-    // }
     subscription?.cancel();
   }
 
@@ -172,8 +150,20 @@ class _TrackScreenState extends State<TrackScreen> {
                               itemCount: accessPoints.length,
                               itemBuilder: (context, i) => _AccessPointTile(
                                 accessPoint: accessPoints[i],
-                                onLacakPressed: () =>
-                                    _onConnectPressed(), // Pass the function
+                                // onLacakPressed: () {
+                                //   setState(() => _currSsid =
+                                //       accessPoints[i].ssid.toString());
+                                //   _onConnectPressed();
+                                //
+                                onLacakPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            TrackingDirectionScreen(
+                                                ap: accessPoints[i])),
+                                  );
+                                },
                               ),
                             ),
                     ),
@@ -332,35 +322,35 @@ class _AccessPointTile extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () {
                     onLacakPressed();
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text(title),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _buildInfo("BSSDI", accessPoint.bssid),
-                            _buildInfo("Capability", accessPoint.capabilities),
-                            _buildInfo(
-                                "frequency", "${accessPoint.frequency}MHz"),
-                            _buildInfo("level", accessPoint.level),
-                            _buildInfo("standard", accessPoint.standard),
-                            _buildInfo("centerFrequency0",
-                                "${accessPoint.centerFrequency0}MHz"),
-                            _buildInfo("centerFrequency1",
-                                "${accessPoint.centerFrequency1}MHz"),
-                            _buildInfo(
-                                "channelWidth", accessPoint.channelWidth),
-                            _buildInfo("isPasspoint", accessPoint.isPasspoint),
-                            _buildInfo("operatorFriendlyName",
-                                accessPoint.operatorFriendlyName),
-                            _buildInfo("venueName", accessPoint.venueName),
-                            _buildInfo("is80211mcResponder",
-                                accessPoint.is80211mcResponder),
-                          ],
-                        ),
-                      ),
-                    );
+                    //   showDialog(
+                    //     context: context,
+                    //     builder: (context) => AlertDialog(
+                    //       title: Text(title),
+                    //       content: Column(
+                    //         mainAxisSize: MainAxisSize.min,
+                    //         children: [
+                    //           _buildInfo("BSSDI", accessPoint.bssid),
+                    //           _buildInfo("Capability", accessPoint.capabilities),
+                    //           _buildInfo(
+                    //               "frequency", "${accessPoint.frequency}MHz"),
+                    //           _buildInfo("level", accessPoint.level),
+                    //           _buildInfo("standard", accessPoint.standard),
+                    //           _buildInfo("centerFrequency0",
+                    //               "${accessPoint.centerFrequency0}MHz"),
+                    //           _buildInfo("centerFrequency1",
+                    //               "${accessPoint.centerFrequency1}MHz"),
+                    //           _buildInfo(
+                    //               "channelWidth", accessPoint.channelWidth),
+                    //           _buildInfo("isPasspoint", accessPoint.isPasspoint),
+                    //           _buildInfo("operatorFriendlyName",
+                    //               accessPoint.operatorFriendlyName),
+                    //           _buildInfo("venueName", accessPoint.venueName),
+                    //           _buildInfo("is80211mcResponder",
+                    //               accessPoint.is80211mcResponder),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   );
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
