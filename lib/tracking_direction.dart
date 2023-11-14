@@ -6,7 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 class TrackingDirectionScreen extends StatefulWidget {
   final WiFiAccessPoint ap;
-  const TrackingDirectionScreen({Key? key, required this.ap});
+  const TrackingDirectionScreen({super.key, required this.ap});
 
   @override
   State<TrackingDirectionScreen> createState() =>
@@ -65,13 +65,77 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
       ),
       body: Stack(
         children: <Widget>[
-          Builder(builder: (context) {
-            if (_hasPermissions) {
-              return _buildCompass();
-            } else {
-              return _buildPermissionSheet();
-            }
-          }),
+          SizedBox(
+            width: double.infinity,
+            child: Column(
+              children: <Widget>[
+                const SizedBox(height: 64),
+                const Text(
+                  'Lacak',
+                  style: TextStyle(
+                      fontSize: 32.0,
+                      color: Color(0xFFF95223),
+                      fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 12.0),
+                Builder(builder: (context) {
+                  if (_hasPermissions) {
+                    return _buildCompass();
+                  } else {
+                    return _buildPermissionSheet();
+                  }
+                }),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        margin: EdgeInsets.symmetric(horizontal: 8),
+                        child: Column(
+                          children: [
+                            Text(
+                              'SSID:',
+                              style: TextStyle(
+                                  fontSize: 20.0,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            Text(
+                              widget.ap.ssid,
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        margin: EdgeInsets.symmetric(horizontal: 8),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Kekuatan Sinyal:',
+                              style: TextStyle(
+                                  fontSize: 20.0,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            Text(
+                              widget.ap.level.toString(),
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
           Positioned(
               top: 16.0,
               left: 16.0,
@@ -115,8 +179,9 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
               padding: EdgeInsets.all(25),
               child: Transform.rotate(
                 angle: direction * (pi / 180) * -1,
-                child: Image.asset('assets/images/compass.png',
-                    color: Colors.black),
+                child: Image.asset(
+                  'assets/images/compass.png',
+                ),
               ),
             ),
           );
