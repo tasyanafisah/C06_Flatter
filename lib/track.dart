@@ -260,10 +260,20 @@ class _AccessPointTile extends StatelessWidget {
                       horizontal: 4.0, vertical: 20.0),
                   child: Column(
                     children: [
-                      Text(
-                        getDistance(accessPoint.level),
-                        style: const TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.bold),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset('assets/images/kuranglebih.png',
+                              width: 12, height: 12),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Text(
+                            getDistance(accessPoint.level),
+                            style: const TextStyle(
+                                fontSize: 30, fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 2.0),
                       const Text("Meter",
