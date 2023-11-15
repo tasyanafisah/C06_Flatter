@@ -195,8 +195,6 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                         currentStep = 1;
                       });
                       print(rssiA);
-                      // TODO: Open Wi-Fi settings on Android
-                      // You can use platform channels for Android-specific actions
                     },
                     child: const Text('Set lokasi awal'),
                   ),
@@ -210,16 +208,13 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                           borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () {
-                      // TODO: Ask the user to walk 3.5 meters to northwest
-                      // and save the RSSI value to rssiB
                       setState(() {
                         rssiB =
                             widget.trackScreenController.currAp.value?.level ??
                                 0;
                         currentStep = 2;
                       });
-
-                      print(rssiA);
+                      print(rssiB);
                     },
                     child: const Text('Set lokasi kedua'),
                   ),
@@ -242,7 +237,7 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                         currentStep = 3;
                       });
 
-                      print(rssiA);
+                      print(rssiC);
                     },
                     child: const Text('Set lokasi ketiga'),
                   ),
@@ -265,7 +260,7 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                         currentStep = 4;
                       });
 
-                      print(rssiA);
+                      print(rssiD);
                     },
                     child: const Text('Set lokasi keempat'),
                   ),
@@ -288,7 +283,7 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                         currentStep = 5;
                       });
 
-                      print(rssiA);
+                      print(rssiE);
                     },
                     child: const Text('Set lokasi kelima'),
                   ),
@@ -303,9 +298,27 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                     ),
                     onPressed: () {
                       print("End reached");
-                      // TODO: Walk the user to the start position
-                      // and compare all five RSSI values to make a decision
-                      // on which way to go
+                      print("End reached");
+
+                      // Create a list of Map entries with direction and corresponding RSSI values
+                      List<Map<String, dynamic>> rssiList = [
+                        {'direction': 'Titik tengah', 'rssi': rssiA},
+                        {'direction': 'Barat Laut', 'rssi': rssiB},
+                        {'direction': 'Timur Laut', 'rssi': rssiC},
+                        {'direction': 'Tenggara', 'rssi': rssiD},
+                        {'direction': 'Barat Daya', 'rssi': rssiE},
+                      ];
+
+                      // Sort the list based on RSSI values in descending order
+                      rssiList.sort((a, b) => b['rssi'].compareTo(a['rssi']));
+
+                      // Get the direction with the maximum RSSI
+                      String maxRssiDirection = rssiList.isNotEmpty
+                          ? rssiList.first['direction']
+                          : '';
+
+                      // Print or use the direction with the maximum RSSI
+                      print('Maximum RSSI Direction: $maxRssiDirection');
                     },
                     child: const Text('Hitung estimasi arah'),
                   ),
