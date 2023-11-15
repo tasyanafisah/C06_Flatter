@@ -58,6 +58,7 @@ class _TrackScreenState extends State<TrackScreen> {
           setState(() {
             accessPoints = result;
             trackScreenController.updateAccessPoints(result);
+            print(trackScreenController.accessPoints);
           });
         },
         onDone: () {},
@@ -159,8 +160,6 @@ class _TrackScreenState extends State<TrackScreen> {
                                 //   _onConnectPressed();
                                 //
                                 onLacakPressed: () {
-                                  trackScreenController
-                                      .updateCurrAp(accessPoints[i]);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -168,6 +167,7 @@ class _TrackScreenState extends State<TrackScreen> {
                                           TrackingDirectionScreen(
                                         trackScreenController:
                                             trackScreenController,
+                                        index: i,
                                       ),
                                     ),
                                   );

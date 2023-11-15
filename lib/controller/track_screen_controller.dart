@@ -5,13 +5,5 @@ class TrackScreenController extends GetxController {
   var accessPoints = <WiFiAccessPoint>[].obs;
   void updateAccessPoints(List<WiFiAccessPoint> newAccessPoints) {
     accessPoints.value = newAccessPoints;
-    print("updated aps");
-  }
-
-  var currAp = Rx<WiFiAccessPoint?>(null);
-
-  void updateCurrAp(WiFiAccessPoint newAccessPoint) {
-    currAp.value = newAccessPoint;
-    print("updated ap");
   }
 }

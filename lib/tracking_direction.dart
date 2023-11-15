@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
@@ -7,11 +9,10 @@ import 'package:capstone_safeguard_flutter/controller/track_screen_controller.da
 
 class TrackingDirectionScreen extends StatefulWidget {
   final TrackScreenController trackScreenController;
+  final int index;
 
-  const TrackingDirectionScreen({
-    super.key,
-    required this.trackScreenController,
-  });
+  const TrackingDirectionScreen(
+      {super.key, required this.trackScreenController, required this.index});
 
   @override
   State<TrackingDirectionScreen> createState() =>
@@ -19,6 +20,7 @@ class TrackingDirectionScreen extends StatefulWidget {
 }
 
 class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
+  StreamSubscription<List<WiFiAccessPoint>>? subscription;
   bool _hasPermissions = false;
   int rssiA = 0, rssiB = 0, rssiC = 0, rssiD = 0, rssiE = 0, currentStep = 0;
 
@@ -27,14 +29,10 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
     super.initState();
     _fetchPermissionStatus();
 
-    List<WiFiAccessPoint> accessPoints =
-        widget.trackScreenController.accessPoints;
-    if (accessPoints.isNotEmpty) {
-      print(accessPoints);
-    }
+    _startListeningToScanResults(context);
 
     print(
-      "Curr AP: ${widget.trackScreenController.currAp}",
+      "Curr AP: ${widget.trackScreenController.accessPoints[widget.index].ssid}",
     );
   }
 
@@ -46,6 +44,42 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
         });
       }
     });
+  }
+
+  bool shouldCheckCan = true;
+
+  Future<bool> _canGetScannedResults(BuildContext context) async {
+    if (shouldCheckCan) {
+      final can = await WiFiScan.instance.canGetScannedResults();
+      if (can != CanGetScannedResults.yes) {
+        if (mounted) kShowSnackBar(context, "Cannot get scanned results: $can");
+        return false;
+      }
+    }
+    return true;
+  }
+
+  Future<void> _startListeningToScanResults(BuildContext context) async {
+    if (await _canGetScannedResults(context)) {
+      subscription = WiFiScan.instance.onScannedResultsAvailable.listen(
+        (result) {
+          setState(() {
+            widget.trackScreenController.updateAccessPoints(result);
+            print(widget.trackScreenController.accessPoints);
+          });
+        },
+        onDone: () {},
+        onError: (error) {
+          if (mounted) kShowSnackBar(context, "Scan stream error: $error");
+        },
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    subscription?.cancel();
+    super.dispose();
   }
 
   String _teksPerintah() {
@@ -138,8 +172,14 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                                   fontWeight: FontWeight.w600),
                             ),
                             Text(
-                              widget.trackScreenController.currAp.value?.ssid ??
-                                  'No Access Point',
+                              widget
+                                      .trackScreenController
+                                      .accessPoints[widget.index]
+                                      .ssid
+                                      .isNotEmpty
+                                  ? widget.trackScreenController
+                                      .accessPoints[widget.index].ssid
+                                  : "Tidak ada SSID",
                               style: const TextStyle(fontSize: 14),
                             ),
                           ],
@@ -160,9 +200,9 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                                   fontWeight: FontWeight.w600),
                             ),
                             Text(
-                              widget.trackScreenController.currAp.value?.level
-                                      .toString() ??
-                                  'No Signal Strength',
+                              widget.trackScreenController
+                                  .accessPoints[widget.index].level
+                                  .toString(),
                               style: const TextStyle(fontSize: 14),
                             ),
                           ],
@@ -171,27 +211,27 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                     )
                   ],
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Text(
                   _teksPerintah(),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16.0,
                   ),
                 ),
                 if (currentStep == 0)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFF95223),
+                      backgroundColor: const Color(0xFFF95223),
                       foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () {
                       setState(() {
-                        rssiA =
-                            widget.trackScreenController.currAp.value?.level ??
-                                0;
+                        rssiA = widget.trackScreenController
+                                .accessPoints[widget.index].level ??
+                            0;
                         currentStep = 1;
                       });
                       print(rssiA);
@@ -201,17 +241,17 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                 if (currentStep == 1)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFF95223),
+                      backgroundColor: const Color(0xFFF95223),
                       foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () {
                       setState(() {
-                        rssiB =
-                            widget.trackScreenController.currAp.value?.level ??
-                                0;
+                        rssiB = widget.trackScreenController
+                                .accessPoints[widget.index].level ??
+                            0;
                         currentStep = 2;
                       });
                       print(rssiB);
@@ -221,9 +261,9 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                 if (currentStep == 2)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFF95223),
+                      backgroundColor: const Color(0xFFF95223),
                       foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                     ),
@@ -231,9 +271,9 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                       // TODO: Ask the user to walk 3.5 meters to east
                       // and save the RSSI value to rssiC
                       setState(() {
-                        rssiC =
-                            widget.trackScreenController.currAp.value?.level ??
-                                0;
+                        rssiC = widget.trackScreenController
+                                .accessPoints[widget.index].level ??
+                            0;
                         currentStep = 3;
                       });
 
@@ -244,9 +284,9 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                 if (currentStep == 3)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFF95223),
+                      backgroundColor: const Color(0xFFF95223),
                       foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                     ),
@@ -254,9 +294,9 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                       // TODO: Ask the user to walk 3.5 meters to south
                       // and save the RSSI value to rssiD
                       setState(() {
-                        rssiD =
-                            widget.trackScreenController.currAp.value?.level ??
-                                0;
+                        rssiD = widget.trackScreenController
+                                .accessPoints[widget.index].level ??
+                            0;
                         currentStep = 4;
                       });
 
@@ -267,9 +307,9 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                 if (currentStep == 4)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFF95223),
+                      backgroundColor: const Color(0xFFF95223),
                       foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                     ),
@@ -277,9 +317,9 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                       // TODO: Ask the user to walk 3.5 meters to west
                       // and save the RSSI value to rssiE
                       setState(() {
-                        rssiE =
-                            widget.trackScreenController.currAp.value?.level ??
-                                0;
+                        rssiE = widget.trackScreenController
+                                .accessPoints[widget.index].level ??
+                            0;
                         currentStep = 5;
                       });
 
@@ -290,17 +330,15 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                 if (currentStep == 5)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFF95223),
+                      backgroundColor: const Color(0xFFF95223),
                       foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () {
                       print("End reached");
-                      print("End reached");
 
-                      // Create a list of Map entries with direction and corresponding RSSI values
                       List<Map<String, dynamic>> rssiList = [
                         {'direction': 'Titik tengah', 'rssi': rssiA},
                         {'direction': 'Barat Laut', 'rssi': rssiB},
@@ -309,15 +347,12 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                         {'direction': 'Barat Daya', 'rssi': rssiE},
                       ];
 
-                      // Sort the list based on RSSI values in descending order
                       rssiList.sort((a, b) => b['rssi'].compareTo(a['rssi']));
 
-                      // Get the direction with the maximum RSSI
                       String maxRssiDirection = rssiList.isNotEmpty
                           ? rssiList.first['direction']
                           : '';
 
-                      // Print or use the direction with the maximum RSSI
                       print('Maximum RSSI Direction: $maxRssiDirection');
                     },
                     child: const Text('Hitung estimasi arah'),
@@ -390,4 +425,11 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
       ),
     );
   }
+}
+
+void kShowSnackBar(BuildContext context, String message) {
+  if (kDebugMode) print(message);
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(content: Text(message)));
 }
