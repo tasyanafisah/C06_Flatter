@@ -221,6 +221,13 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                     return _buildPermissionSheet();
                   }
                 }),
+                Text(
+                  teksGerakJalan[_resultDirection] ?? '',
+                  style: const TextStyle(
+                      fontSize: 12.0,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,

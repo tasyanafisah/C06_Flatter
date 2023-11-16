@@ -19,7 +19,6 @@ class _TrackScreenState extends State<TrackScreen> {
   TrackScreenController trackScreenController = TrackScreenController();
   List<WiFiAccessPoint> accessPoints = <WiFiAccessPoint>[];
   StreamSubscription<List<WiFiAccessPoint>>? subscription;
-  late List<WiFiAccessPoint> filteredAccessPoints;
   var _isSuccessConnect = false;
 
   @override
@@ -83,14 +82,6 @@ class _TrackScreenState extends State<TrackScreen> {
 
   void _stopListeningToScanResults() {
     subscription?.cancel();
-  }
-
-  void _updateFilteredAccessPoints(aps) {
-    setState(() {
-      filteredAccessPoints =
-          aps.where((ap) => ap.ssid.startsWith('SFG')).toList();
-    });
-    print("Filtered: $filteredAccessPoints");
   }
 
   @override
@@ -161,28 +152,35 @@ class _TrackScreenState extends State<TrackScreen> {
                             )
                           : ListView.builder(
                               itemCount: accessPoints.length,
-                              itemBuilder: (context, i) => _AccessPointTile(
-                                accessPoint: accessPoints[i],
-                                // onLacakPressed: () {
-                                //   setState(() => _currSsid =
-                                //       accessPoints[i].ssid.toString());
-                                //   _onConnectPressed();
-                                //
-                                onLacakPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          TrackingDirectionScreen(
-                                        trackScreenController:
-                                            trackScreenController,
-                                        index: i,
+                              itemBuilder: (context, i) {
+                                List<WiFiAccessPoint> filteredAccessPoints =
+                                    accessPoints
+                                        .where(
+                                            (ap) => ap.ssid.startsWith("SFG"))
+                                        .toList();
+
+                                _AccessPointTile(
+                                  accessPoint: filteredAccessPoints[i],
+                                  // onLacakPressed: () {
+                                  //   setState(() => _currSsid =
+                                  //       accessPoints[i].ssid.toString());
+                                  //   _onConnectPressed();
+                                  //
+                                  onLacakPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            TrackingDirectionScreen(
+                                          trackScreenController:
+                                              trackScreenController,
+                                          index: i,
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
+                                    );
+                                  },
+                                );
+                              }),
                     ),
                   ),
                 ),
