@@ -213,7 +213,7 @@ class _ScanScreenState extends State<ScanScreen> {
     Uri url = Uri.parse(urlQRCode);
     try {
       if (await canLaunchUrl(url)) {
-        await launchUrl(url, mode: LaunchMode.inAppWebView);
+        await launchUrl(url, mode: LaunchMode.externalNonBrowserApplication);
         isLaunched = true;
       } else {
         throw 'Could not launch $url';

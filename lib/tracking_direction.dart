@@ -27,6 +27,23 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
   bool _hasPermissions = false;
   int rssiA = 0, rssiB = 0, rssiC = 0, rssiD = 0, rssiE = 0, currentStep = 0;
 
+  String _resultDirection = "";
+  final Map<String, String> compassImages = {
+    'Titik tengah': 'assets/images/kompas_center.png',
+    'Barat Laut': 'assets/images/kompas_nw.png',
+    'Timur Laut': 'assets/images/kompas_ne.png',
+    'Tenggara': 'assets/images/kompas_se.png',
+    'Barat Daya': 'assets/images/kompas_sw.png',
+  };
+
+  final Map<String, String> teksGerakJalan = {
+    'Titik tengah': 'Anda sudah berada dekat dengan korban',
+    'Barat Laut': 'Bergeraklah menuju Barat Laut (NW)',
+    'Timur Laut': 'Bergeraklah menuju Timur Laur (NE)',
+    'Tenggara': 'Bergeraklah menuju Tenggara (SE)',
+    'Barat Daya': 'Bergeraklah menuju Barat Daya (SW)',
+  };
+
   @override
   void initState() {
     super.initState();
@@ -403,7 +420,19 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                           ? rssiList.first['direction']
                           : '';
 
-                      print('Maximum RSSI Direction: $maxRssiDirection');
+                      setState(() {
+                        _resultDirection = maxRssiDirection;
+                        print(_resultDirection);
+                        rssiA = 0;
+                        rssiB = 0;
+                        rssiC = 0;
+                        rssiD = 0;
+                        rssiE = 0;
+                        currentStep = 0;
+                      });
+
+                      print(
+                          'Maximum RSSI is in the direction: $maxRssiDirection');
                     },
                     child: const Text('Hitung estimasi arah'),
                   ),
@@ -448,14 +477,15 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
             );
           }
 
+          String compassImagePath =
+              compassImages[_resultDirection] ?? 'assets/images/compass.png';
+
           return Center(
             child: Container(
               padding: const EdgeInsets.all(25),
               child: Transform.rotate(
                 angle: direction * (pi / 180) * -1,
-                child: Image.asset(
-                  'assets/images/compass.png',
-                ),
+                child: Image.asset(compassImagePath, width: 300, height: 300),
               ),
             ),
           );

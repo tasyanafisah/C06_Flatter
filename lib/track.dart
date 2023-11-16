@@ -19,6 +19,7 @@ class _TrackScreenState extends State<TrackScreen> {
   TrackScreenController trackScreenController = TrackScreenController();
   List<WiFiAccessPoint> accessPoints = <WiFiAccessPoint>[];
   StreamSubscription<List<WiFiAccessPoint>>? subscription;
+  late List<WiFiAccessPoint> filteredAccessPoints;
   var _isSuccessConnect = false;
 
   @override
@@ -82,6 +83,14 @@ class _TrackScreenState extends State<TrackScreen> {
 
   void _stopListeningToScanResults() {
     subscription?.cancel();
+  }
+
+  void _updateFilteredAccessPoints(aps) {
+    setState(() {
+      filteredAccessPoints =
+          aps.where((ap) => ap.ssid.startsWith('SFG')).toList();
+    });
+    print("Filtered: $filteredAccessPoints");
   }
 
   @override
