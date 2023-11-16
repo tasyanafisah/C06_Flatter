@@ -17,10 +17,12 @@ dependencies:
     git:
       url: https://github.com/clstyn/flutter_wifi_connector.git
       ref: master
-  http: ^1.1.0
+  wifi_iot: ^0.3.18+1
   flutter_compass: ^0.7.0
   permission_handler: ^11.0.1
   get: ^4.6.6
+  connectivity: ^3.0.0
+  app_settings: ^5.1.1
 
 dev_dependencies:
   flutter_test:

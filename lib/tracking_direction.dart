@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 import 'package:flutter/material.dart';
+import 'package:app_settings/app_settings.dart';
+import 'package:wifi_iot/wifi_iot.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:capstone_safeguard_flutter/controller/track_screen_controller.dart';
@@ -76,6 +79,23 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
     }
   }
 
+  Future<void> connectToWifi(String ssid, String password) async {
+    try {
+      await WiFiForIoTPlugin.connect(ssid,
+          password: password, security: NetworkSecurity.WPA);
+      await Future.delayed(Duration(seconds: 10));
+
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult == ConnectivityResult.wifi) {
+        print('Connected to Wi-Fi: $ssid');
+      } else {
+        print('Failed to connect to Wi-Fi: $ssid');
+      }
+    } catch (e) {
+      print('Error connecting to Wi-Fi: $e');
+    }
+  }
+
   @override
   void dispose() {
     subscription?.cancel();
@@ -87,13 +107,13 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
       case 0:
         return 'Klik untuk pilih titik ini sebagai titik awal pencarian';
       case 1:
-        return 'Jalan 3.5 meter ke Barat Daya, lalu klik';
+        return 'Jalan 3.5 meter ke Barat Daya (NW), lalu klik';
       case 2:
-        return 'Jalan 3.5 meter ke Timur, lalu klik';
+        return 'Jalan 3.5 meter ke Timur (E), lalu klik';
       case 3:
-        return 'Jalan 3.5 meter ke Selatan, lalu klik';
+        return 'Jalan 3.5 meter ke Selatan (S), lalu klik';
       case 4:
-        return 'Jalan 3.5 meter ke Barat, lalu klik';
+        return 'Jalan 3.5 meter ke Barat (W), lalu klik';
       case 5:
         return 'Kembali ke titik awal pencarian, lalu klik';
       default:
@@ -138,7 +158,7 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                const SizedBox(height: 64),
+                const SizedBox(height: 42),
                 const Text(
                   'Lacak',
                   style: TextStyle(
@@ -147,6 +167,36 @@ class _TrackingDirectionScreenState extends State<TrackingDirectionScreen> {
                       fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 12.0),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white70,
+                    foregroundColor: const Color(0xFFF95223),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text("Sambungkan dengan Wi-Fi"),
+                        content: Text(
+                            "Sambungkan dengan Wi-Fi SSID ${widget.trackScreenController.accessPoints[widget.index].ssid} dan password 12345678"),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Close the dialog
+                              AppSettings.openAppSettings(
+                                  type: AppSettingsType.wifi);
+                            },
+                            child: const Text('Oke!'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  child: const Text('Dengarkan suara'),
+                ),
                 Builder(builder: (context) {
                   if (_hasPermissions) {
                     return _buildCompass();
